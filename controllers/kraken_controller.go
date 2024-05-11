@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"main/services"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,4 +47,31 @@ func KrakenGetInfoHealth(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, jsonData)
 }
 
+func KrakenGetBalance(ctx *gin.Context) {
+	apiKraken := services.KrakenApi{
+		Key:    os.Getenv("KRAKEN_API_KEY"),
+		Secret: os.Getenv("KRAKEN_PRIVATE_KEY"),
+		Client: &http.Client{},
+	}
 
+	balanceResponse, err := apiKraken.GetBalance()
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusBadRequest, err)
+		ctx.Abort()
+		return
+	}
+
+	// Transform the API response into JSON
+	var jsonData map[string]interface{}
+	err = json.Unmarshal(balanceResponse, &jsonData)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Return JSON response
+	ctx.JSON(http.StatusOK, jsonData)
+}
