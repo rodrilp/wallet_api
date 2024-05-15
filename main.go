@@ -16,5 +16,9 @@ func main() {
 
 	r := router.SetupRouter()
 
-	r.Run()
+	err = r.Run()
+
+	if err != nil {
+		fmt.Println("Error running the Router")
+	}
 }
