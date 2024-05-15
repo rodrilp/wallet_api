@@ -17,6 +17,7 @@ func SetupRouter() *gin.Engine {
 	krakenGroup := r.Group("/kraken")
 	krakenGroup.GET("/health", controllers.KrakenGetInfoHealth)
 	krakenGroup.GET("/balance", controllers.KrakenGetBalance)
+	krakenGroup.GET("/balanceExtend", controllers.KrakenGetBalanceExtend)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"message": "Page not found"})

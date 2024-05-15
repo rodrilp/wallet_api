@@ -41,7 +41,6 @@ func (kraken *KrakenApi) GetBalance() ([]byte, error) {
 	req.Header.Set("API-Key", os.Getenv("KRAKEN_API_KEY"))
 	req.Header.Set("API-Sign", signature)
 
-	fmt.Println(req)
 	client := &http.Client{}
 
 	res, err := client.Do(req)
@@ -57,6 +56,44 @@ func (kraken *KrakenApi) GetBalance() ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
+	return body, nil
+}
+
+func (kraken *KrakenApi) GetBalanceExtend() ([]byte, error) {
+	uri := "/0/private/BalanceEx"
+	method := "POST"
+
+	params := url.Values{}
+	params.Add("nonce", fmt.Sprintf("%d", time.Now().UnixMilli()))
+	
+	req, err := http.NewRequest(method,
+		baseUrl+uri,
+		strings.NewReader(params.Encode()))
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	signature := helpers.GetSignature(uri, params)
+
+	req.Header.Set("API-Key", os.Getenv("KRAKEN_API_KEY"))
+	req.Header.Set("API-Sign", signature)
+
+	client := &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
 	return body, nil
 }

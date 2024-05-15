@@ -31,9 +31,6 @@ func KrakenGetInfoHealth(ctx *gin.Context) {
 		return
 	}
 
-	// Print the response
-	fmt.Println("Respuesta de la API:", string(cuerpoRespuesta))
-
 	// Transform the API response into JSON
 	var jsonData map[string]interface{}
 	err = json.Unmarshal(cuerpoRespuesta, &jsonData)
@@ -55,6 +52,35 @@ func KrakenGetBalance(ctx *gin.Context) {
 	}
 
 	balanceResponse, err := apiKraken.GetBalance()
+
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusBadRequest, err)
+		ctx.Abort()
+		return
+	}
+
+	// Transform the API response into JSON
+	var jsonData map[string]interface{}
+	err = json.Unmarshal(balanceResponse, &jsonData)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Return JSON response
+	ctx.JSON(http.StatusOK, jsonData)
+}
+
+func KrakenGetBalanceExtend(ctx *gin.Context) {
+	apiKraken := services.KrakenApi{
+		Key:    os.Getenv("KRAKEN_API_KEY"),
+		Secret: os.Getenv("KRAKEN_PRIVATE_KEY"),
+		Client: &http.Client{},
+	}
+
+	balanceResponse, err := apiKraken.GetBalanceExtend()
 
 	if err != nil {
 		fmt.Println(err)
