@@ -41,7 +41,6 @@ func (kraken *KrakenApi) GetBalance() ([]byte, error) {
 	req.Header.Set("API-Key", os.Getenv("KRAKEN_API_KEY"))
 	req.Header.Set("API-Sign", signature)
 
-	fmt.Println(req)
 	client := &http.Client{}
 
 	res, err := client.Do(req)
@@ -57,7 +56,6 @@ func (kraken *KrakenApi) GetBalance() ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
 	return body, nil
 }
 
@@ -82,7 +80,6 @@ func (kraken *KrakenApi) GetBalanceExtend() ([]byte, error) {
 	req.Header.Set("API-Key", os.Getenv("KRAKEN_API_KEY"))
 	req.Header.Set("API-Sign", signature)
 
-	fmt.Println(req)
 	client := &http.Client{}
 
 	res, err := client.Do(req)
@@ -98,6 +95,5 @@ func (kraken *KrakenApi) GetBalanceExtend() ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
 	return body, nil
 }

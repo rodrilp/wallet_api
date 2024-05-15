@@ -31,9 +31,6 @@ func KrakenGetInfoHealth(ctx *gin.Context) {
 		return
 	}
 
-	// Print the response
-	fmt.Println("Respuesta de la API:", string(cuerpoRespuesta))
-
 	// Transform the API response into JSON
 	var jsonData map[string]interface{}
 	err = json.Unmarshal(cuerpoRespuesta, &jsonData)
